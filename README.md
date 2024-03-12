@@ -1,3 +1,3 @@
 # Yubaba
 
-a hackathon project
+a hackathon project with a coool webhook
