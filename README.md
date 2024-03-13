@@ -4,6 +4,8 @@ a hackathon project with a coool webhook
 
 # Develop with kivy :
 
+In the working directory :  
+  
 For Windows default CMD, in the command line do:   
 ```kivy_venv\Scripts\activate```  
   
