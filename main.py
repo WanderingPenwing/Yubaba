@@ -12,16 +12,18 @@ from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
 
 def handle_file_open(file_path):
-	print("opened with yubaba :")
-	for i in range (len(file_path)) :
-		print (file_path[i])
+	# pour qu'on gere un seul fichier, en prenant comme argument son path (uniquement) donc a formater en amont
+	print("opened with yubaba : " + file_path)
 
 
 class MainLayout(BoxLayout):
 	def open_files (self):
-		path = filechooser.open_file(title="Pick a PNG file..",filters=[("PNG", "*.png")], multiple=True)
-		handle_file_open(path)
-		Editor.write('input_path', str(path))
+		selected_files = filechooser.open_file(title="Pick a PNG file..",filters=[("PNG", "*.png")], multiple=True)
+		
+	for file_path in selected_files : # but : executer handle_file_open pour chaque fichier selectionné
+		handle_file_open(file_path)
+	
+	#Editor.write('input_path', str(path))
 
 			
 class YubabaApp(App): #load the yubaba.kv file
