@@ -3,6 +3,9 @@ import kivy
 kivy.require('1.0.7')
 import sys
 
+import tkinter
+from tkinter import filedialog
+
 from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.uix.button import Button
@@ -14,7 +17,8 @@ def handle_file_open(file_path):
 
 class MainLayout(BoxLayout):
 	def open_files (self):
-		print ("open")
+		tkinter.Tk().withdraw() # prevents an empty tkinter window from appearing
+		folder_path = filedialog.askdirectory()
 
 			
 class YubabaApp(App): #load the yubaba.kv file
