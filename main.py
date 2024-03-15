@@ -19,11 +19,10 @@ def handle_file_open(file_path):
 class MainLayout(BoxLayout):
 	def open_files (self):
 		selected_files = filechooser.open_file(title="Pick a PNG file..",filters=[("PNG", "*.png")], multiple=True)
-		
-	for file_path in selected_files : # but : executer handle_file_open pour chaque fichier selectionné
-		handle_file_open(file_path)
-	
-	#Editor.write('input_path', str(path))
+
+		for file_path in selected_files : # but : executer handle_file_open pour chaque fichier selectionné
+			handle_file_open(file_path)
+			Editor.write('input_path'+str(selected_files.index(file_path)+1), str(file_path))
 
 			
 class YubabaApp(App): #load the yubaba.kv file
