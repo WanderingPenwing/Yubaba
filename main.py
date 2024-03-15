@@ -19,7 +19,7 @@ def handle_file_open(file_path):
 
 class MainLayout(BoxLayout):
 	def open_files (self):
-		path = filechooser.open_file(title="Pick a PNG file..",filters=[("PNG", "*.png")])
+		path = filechooser.open_file(title="Pick a PNG file..",filters=[("PNG", "*.png")], multiple=True)
 		handle_file_open(path)
 		Editor.write('input_path', str(path))
 
