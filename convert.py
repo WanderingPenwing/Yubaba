@@ -1,18 +1,11 @@
 import ffmpeg
-# (
-#     ffmpeg
-#     .input('input.mp4')
-#     .hflip()
-#     .output('output.mp4')
-#     .run()
-# )
+from PIL import Image
 
 TYPE = {
     'IMAGE' : ['jpeg','jpg','png','webp'],
 	'VIDEO' : ['mp4'],
 	'AUDIO' : ['mp3','wav']
 }
-
 
 def find_file_name(input_path):
 	name = ''
@@ -46,24 +39,37 @@ def convert(input_path, ex_to=str,  output_path='') :
 		output_path = parent + file + "." + ex_to
 	else: 
 		output_path += file + "." + ex_to
-	
-	print(output_path)
 
 	for KEY in TYPE:
 		for ext in TYPE[KEY]:
 			if ext == ex_from:
 				print('You are trying to convert a '+ KEY)
-				file_type = KEY
+				file_conv = KEY
 				break
-		if file_type != None:
+		if file_conv != None:
 			break
-
-	(
-	ffmpeg
-	.input(input_path)
-	.output(output_path)
-	.run()
-	)
+	
+	if file_conv == 'IMAGE':
+		(
+			Image
+			.open(input_path)
+			.convert("RGB")
+			.save(output_path, ex_to)
+		)
+	
+	elif file_conv == 'VIDEO':
+		pass
+	elif file_conv == 'AUDIO':
+		pass
+	else:
+		print("The file, you are trying to convert, is not supported")
 
 if __name__ == '__main__':
-	convert('audios/Macroblank - VANDAL CLUB - 01 vandal 1.mp3', 'wav')
+	convert('images\Fear and loathing in vegas.jpg', 'png')
+	# (
+	#     ffmpeg
+	#     .input('input.mp4')
+	#     .output('output.mp4')
+	#     .run()
+	# )
+
