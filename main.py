@@ -55,9 +55,11 @@ class FileLabel(RecycleDataViewBehavior, Label):
         if self.collide_point(*touch.pos) and self.selectable:
             return self.parent.select_with_touch(self.index, touch)
 
-    def apply_selection(self, rv, index, is_selected):
+    def apply_selection(self, file_list, index, is_selected):
         # Respond to the selection of items in the view. 
         self.selected = is_selected
+        #print(str(index) + '/' + str(is_selected))
+        file_list.data[index]['selected'] = is_selected
 
 
 class FileList(RecycleView):
@@ -79,18 +81,17 @@ class MainLayout(BoxLayout):
             Editor.write('input_path' + str(selected_files.index(file_path) + 1), str(file_path))
 
     def remove_selected(self):
-        # Get selected files
-        selected_files = []
+        indexes = [file_index for file_index in range(len(self.file_list.data)) if not(self.file_list.data[file_index]['selected'])]
+        App.get_running_app().remove_indexed(indexes)
 
-        print(selected_files)
+        # Does not work : after all items are deselected, they are selected back again by an unkown function
 
-        # Remove selected files from files_to_convert
-        for file_index in selected_files:
-            App.get_running_app().files_to_convert.remove(file_index)
-        print(App.get_running_app().files_to_convert)
-
-        # Update the data of the FileList
-        self.file_list.data = [{'text': file['name'] + '.' + file['extension'], 'selected': False} for file in App.get_running_app().files_to_convert]
+        # children = self.file_list.children[0].children
+        # for index in range(len(self.file_list.data)):
+        #     print(index)
+        #     if isinstance(children[index], FileLabel):
+        #         print('!')
+        #         children[index].apply_selection(self.file_list, index, False)
 
 
 class YubabaApp(App):  # load the yubaba.kv file
@@ -111,6 +112,10 @@ class YubabaApp(App):  # load the yubaba.kv file
         self.files_to_convert.append(file)
         
         # Update the data of the FileList
+        self.root.file_list.data = [{'text': file['name'] + '.' + file['extension'], 'selected' : False} for file in self.files_to_convert]
+
+    def remove_indexed(self, indexes) :
+        self.files_to_convert = [self.files_to_convert[file_index] for file_index in indexes]
         self.root.file_list.data = [{'text': file['name'] + '.' + file['extension'], 'selected' : False} for file in self.files_to_convert]
 
     def build(self):
