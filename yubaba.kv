@@ -1,11 +1,12 @@
 <FileLabel>:
+    halign: 'left'  # Supposed to align the text to the left
     # Draw a background to indicate selection
     canvas.before:
         Color:
             rgba: (.0, 0.9, .1, .3) if self.selected else (0, 0, 0, 1)
         Rectangle:
             pos: self.pos
-            size: self.size
+
 <FileList>:
     viewclass: 'FileLabel'
     SelectableRecycleBoxLayout:
@@ -28,18 +29,27 @@
             size_hint: (1, 0.08)
         
         GridLayout:
-            cols: 3
+            cols: 2
             padding: 10
             
             BoxLayout:
                 orientation: 'vertical'
                 padding: 20
-        
-                Button:
-                    text: 'open files'
-                    size_hint: (1, 0.2)
-                    id: open_files_button
-                    on_press: root.open_files()
+        		
+        		BoxLayout:
+                	orientation: 'horizontal'
+                	padding: 20
+                	size_hint: (1, 0.1)
+
+                	Button:
+	                    text: 'open files'
+	                    id: open_files_button
+	                    on_press: root.open_files()
+
+	                Button:
+	                    text: 'remove selected'
+	                    id: open_files_button
+	                    on_press: root.remove_selected()
                 
                 Label:
                     text: 'Files to convert:'
@@ -55,14 +65,5 @@
                 Label:
                     id: config
                     text: 'config'
-                    size_hint: (1, 0.2)
-                Widget:
-        
-            BoxLayout:
-                orientation: 'vertical'
-                padding: 20
-                Label:
-                    id: output
-                    text: 'output'
                     size_hint: (1, 0.2)
                 Widget:

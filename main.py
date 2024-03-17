@@ -78,6 +78,20 @@ class MainLayout(BoxLayout):
             App.get_running_app().handle_file_open(file_path)
             Editor.write('input_path' + str(selected_files.index(file_path) + 1), str(file_path))
 
+    def remove_selected(self):
+        # Get selected files
+        selected_files = []
+
+        print(selected_files)
+
+        # Remove selected files from files_to_convert
+        for file_index in selected_files:
+            App.get_running_app().files_to_convert.remove(file_index)
+        print(App.get_running_app().files_to_convert)
+
+        # Update the data of the FileList
+        self.file_list.data = [{'text': file['name'] + '.' + file['extension'], 'selected': False} for file in App.get_running_app().files_to_convert]
+
 
 class YubabaApp(App):  # load the yubaba.kv file
     files_to_convert = ListProperty([])
@@ -97,7 +111,7 @@ class YubabaApp(App):  # load the yubaba.kv file
         self.files_to_convert.append(file)
         
         # Update the data of the FileList
-        self.root.file_list.data = [{'text': file['name'] + '.' + file['extension']} for file in self.files_to_convert]
+        self.root.file_list.data = [{'text': file['name'] + '.' + file['extension'], 'selected' : False} for file in self.files_to_convert]
 
     def build(self):
         self.file_paths_to_open = sys.argv[1:]
