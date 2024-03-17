@@ -1,29 +1,35 @@
-# Ceci est un test pour le push
-import kivy
-kivy.require('1.0.7')
+# Standard library imports
 import sys
-import os  # si ca pete votre config enlevez cette ligne et la suivante x)
-os.environ["PLYER_PLATFORM"] = "gtk"
+
+# Third-party imports
+from plyer import filechooser
 import plyer
 
-from temp_editor import Editor
-from plyer import filechooser
-
+# Kivy imports
+import kivy
 from kivy.app import App
-from kivy.uix.widget import Widget
-from kivy.uix.button import Button
-from kivy.uix.boxlayout import BoxLayout
+from kivy.clock import Clock
 from kivy.lang import Builder
-from kivy.uix.recycleview import RecycleView
-from kivy.uix.recycleview.views import RecycleDataViewBehavior
-from kivy.uix.label import Label
-from kivy.properties import BooleanProperty
-from kivy.uix.recycleboxlayout import RecycleBoxLayout
+from kivy.properties import BooleanProperty, ListProperty
 from kivy.uix.behaviors import FocusBehavior
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
+from kivy.uix.label import Label
+from kivy.uix.recycleboxlayout import RecycleBoxLayout
+from kivy.uix.recycleview import RecycleView
 from kivy.uix.recycleview.layout import LayoutSelectionBehavior
-from kivy.properties import ListProperty
+from kivy.uix.recycleview.views import RecycleDataViewBehavior
+from kivy.uix.widget import Widget
 
+# Our other files
 import convert
+
+# Local imports
+from temp_editor import Editor
+
+# Kivy version requirement
+kivy.require('1.0.7')
+
 
 class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior, RecycleBoxLayout):
     # Adds selection and focus behavior to the view. 
@@ -57,10 +63,14 @@ class FileLabel(RecycleDataViewBehavior, Label):
 class FileList(RecycleView):
     def __init__(self, **kwargs):
         super(FileList, self).__init__(**kwargs)
-        self.data = [{'text': 'File ' + str(x)} for x in range(5)]
+        self.data = []
 
         
 class MainLayout(BoxLayout):
+    def __init__(self, **kwargs):
+        super(MainLayout, self).__init__(**kwargs)
+        self.file_list = self.ids.file_list
+
     def open_files(self):
         selected_files = filechooser.open_file(title="Pick a PNG file..", filters=[("PNG", "*.png")], multiple=True)
 
@@ -85,17 +95,19 @@ class YubabaApp(App):  # load the yubaba.kv file
             "extension": extension
         }
         self.files_to_convert.append(file)
-        print("---------------")
-        print(self.files_to_convert)
+        
+        # Update the data of the FileList
+        self.root.file_list.data = [{'text': file['name'] + '.' + file['extension']} for file in self.files_to_convert]
 
     def build(self):
+        self.file_paths_to_open = sys.argv[1:]
+        Clock.schedule_once(self.handle_start_open, 0)
         return MainLayout()
+
+    def handle_start_open(self, dt):
+        for file_path in self.file_paths_to_open:
+            self.handle_file_open(file_path)
 
 
 if __name__ == '__main__':
-    app = YubabaApp()
-    app.handle_file_open("images/test.webp")
-    if len(sys.argv) > 1:
-        for file_path in sys.argv[1:]:
-            app.handle_file_open(file_path)
-    app.run()
+    YubabaApp().run()
