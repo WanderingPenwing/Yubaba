@@ -1,4 +1,4 @@
-import ffmpeg
+#import ffmpeg
 from PIL import Image
 
 TYPE = {
