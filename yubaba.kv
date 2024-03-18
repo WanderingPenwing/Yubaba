@@ -3,7 +3,7 @@
     # Draw a background to indicate selection
     canvas.before:
         Color:
-            rgba: (.0, 0.9, .1, .3) if self.selected else (0, 0, 0, 1)
+            rgba: (0.9, 0.1, .1, .3) if self.selected else (0.2, 0.2, 0.2, 1)
         Rectangle:
             pos: self.pos
             size: self.size
@@ -20,51 +20,54 @@
         touch_multiselect: True
 
 <MainLayout>
-    BoxLayout:
-        orientation: 'vertical'
+    canvas.before:
+        Color:
+            rgba: 0.25, 0.25, 0.25, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        
+    GridLayout:
+        cols: 2
         padding: 10
         
-        Label:
-            id: title
-            text: 'Yubaba'
-            size_hint: (1, 0.08)
-        
-        GridLayout:
-            cols: 2
-            padding: 10
+        BoxLayout:
+            orientation: 'vertical'
+            padding: 20
+    		
+    		BoxLayout:
+            	orientation: 'horizontal'
+            	padding: 20
+            	size_hint: (1, 0.1)
+
+            	Button:
+                    text: 'open files'
+                    id: open_files_button
+                    on_press: root.open_files()
+
+                Button:
+                    text: 'remove selected'
+                    id: open_files_button
+                    on_press: root.remove_selected()
             
-            BoxLayout:
-                orientation: 'vertical'
-                padding: 20
-        		
-        		BoxLayout:
-                	orientation: 'horizontal'
-                	padding: 20
-                	size_hint: (1, 0.1)
+            Label:
+                text: 'Files to convert:'
+                size_hint_y: None
+                height: self.texture_size[1] * 2
 
-                	Button:
-	                    text: 'open files'
-	                    id: open_files_button
-	                    on_press: root.open_files()
+            FileList:
+            	id: file_list
 
-	                Button:
-	                    text: 'remove selected'
-	                    id: open_files_button
-	                    on_press: root.remove_selected()
-                
-                Label:
-                    text: 'Files to convert:'
-                    size_hint_y: None
-                    height: self.texture_size[1]
+        BoxLayout:
+            orientation: 'vertical'
+            padding: 20
+            Label:
+                id: config
+                text: 'config'
+                size_hint: (1, 0.2)
 
-                FileList:
-                	id: file_list
-
-            BoxLayout:
-                orientation: 'vertical'
-                padding: 20
-                Label:
-                    id: config
-                    text: 'config'
-                    size_hint: (1, 0.2)
-                Widget:
+            # Button:
+            #         text: 'output folder :'
+            #         id: output_folder_button
+            #         on_press: root.open_folder()
+            Widget:

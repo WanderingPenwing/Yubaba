@@ -72,17 +72,40 @@ class MainLayout(BoxLayout):
     def __init__(self, **kwargs):
         super(MainLayout, self).__init__(**kwargs)
         self.file_list = self.ids.file_list
+        self.files_to_convert = []
+        self.output_folder = ""
 
     def open_files(self):
-        selected_files = filechooser.open_file(title="Pick a PNG file..", filters=[("PNG", "*.png")], multiple=True)
+        selected_files = filechooser.open_file(title="Pick a file..", filters=[("PNG", "*.png")], multiple=True)
 
-        for file_path in selected_files:  # but : executer handle_file_open pour chaque fichier selectionné
-            App.get_running_app().handle_file_open(file_path)
+        for file_path in selected_files:
+            self.handle_file_open(file_path)
             Editor.write('input_path' + str(selected_files.index(file_path) + 1), str(file_path))
 
+    def handle_file_open(self, file_path):
+        print("opened with yubaba : " + file_path)
+        parent, name, extension = convert.find_file_name(file_path)
+        
+        if self.output_folder == "" :
+            self.output_folder = parent
+            print(parent)
+
+        file = {
+            "path": file_path,
+            "name": name,
+            "parent": parent,
+            "extension": extension
+        }
+
+        self.files_to_convert.append(file)
+        self.file_list.data = [{'text': file['name'] + '.' + file['extension'], 'selected' : False} for file in self.files_to_convert]
+
+    def open_folder(self):
+        selected_folder = filechooser.open_file(title="Pick a folder...", dirselect=True, filters=[("PNG", "*.dqzd")])
+
     def remove_selected(self):
-        indexes = [file_index for file_index in range(len(self.file_list.data)) if not(self.file_list.data[file_index]['selected'])]
-        App.get_running_app().remove_indexed(indexes)
+        self.files_to_convert = [self.files_to_convert[file_index] for file_index in range(len(self.file_list.data)) if not(self.file_list.data[file_index]['selected'])]
+        self.file_list.data = [{'text': file['name'] + '.' + file['extension'], 'selected' : False} for file in self.files_to_convert]
 
         # Does not work : after all items are deselected, they are selected back again by an unkown function
 
@@ -92,32 +115,9 @@ class MainLayout(BoxLayout):
         #     if isinstance(children[index], FileLabel):
         #         print('!')
         #         children[index].apply_selection(self.file_list, index, False)
-
+    
 
 class YubabaApp(App):  # load the yubaba.kv file
-    files_to_convert = ListProperty([])
-
-    def handle_file_open(self, file_path):
-        # pour qu'on gere un seul fichier, en prenant comme argument son path (uniquement) donc a formater en amont
-        print("opened with yubaba : " + file_path)
-
-        parent, name, extension = convert.find_file_name(file_path)
-
-        file = {
-            "path": file_path,
-            "name": name,
-            "parent": parent,
-            "extension": extension
-        }
-        self.files_to_convert.append(file)
-        
-        # Update the data of the FileList
-        self.root.file_list.data = [{'text': file['name'] + '.' + file['extension'], 'selected' : False} for file in self.files_to_convert]
-
-    def remove_indexed(self, indexes) :
-        self.files_to_convert = [self.files_to_convert[file_index] for file_index in indexes]
-        self.root.file_list.data = [{'text': file['name'] + '.' + file['extension'], 'selected' : False} for file in self.files_to_convert]
-
     def build(self):
         self.file_paths_to_open = sys.argv[1:]
         Clock.schedule_once(self.handle_start_open, 0)
@@ -125,7 +125,7 @@ class YubabaApp(App):  # load the yubaba.kv file
 
     def handle_start_open(self, dt):
         for file_path in self.file_paths_to_open:
-            self.handle_file_open(file_path)
+            self.root.handle_file_open(file_path)
 
 
 if __name__ == '__main__':
