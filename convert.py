@@ -1,25 +1,22 @@
-import ffmpeg
-# (
-#     ffmpeg
-#     .input('input.mp4')
-#     .hflip()
-#     .output('output.mp4')
-#     .run()
-# )
+#import ffmpeg
+from PIL import Image
 
-type_conv = {
-    'IMAGE' : ['jpeg','png'],
+TYPE = {
+    'IMAGE' : ['jpeg','jpg','png','webp'],
 	'VIDEO' : ['mp4'],
 	'AUDIO' : ['mp3','wav']
 }
+
 def find_file_name(input_path):
 	name = ''
 	ext = ''
+	parent = ''
+
 	dot = False
 	slash = False
 	for _ in range(-1,-len(input_path)-1,-1):
 		L = input_path[_]
-		if L == '.':
+		if L == '.' and not dot:
 			dot = True
 			continue
 		if L == '/':
@@ -27,29 +24,52 @@ def find_file_name(input_path):
 		
 		if not dot:
 			ext += L
-		
-		if dot and not slash:
+		elif dot and not slash:
 			name += L
-	return name[::-1], ext[::-1]
+		elif slash:
+			parent += L
+	return parent [::-1], name[::-1], ext[::-1]
 
-def convert(input_path, output_path, ex_from='', ex_to='') :
-	
+
+def convert(input_path, ex_to=str,  output_path='') :
 	file_type = None
-	for key in type_conv:
-		for ext in type_conv[key]:
+	parent, file, ex_from = find_file_name(input_path)
+	
+	if output_path == '':
+		output_path = parent + file + "." + ex_to
+	else: 
+		output_path += file + "." + ex_to
+
+	for KEY in TYPE:
+		for ext in TYPE[KEY]:
 			if ext == ex_from:
-				print('You are trying to convert a '+ key)
-				file_type = key
+				print('You are trying to convert a '+ KEY)
+				file_conv = KEY
 				break
-		if file_type != None:
+		if file_conv != None:
 			break
 	
-	print(find_file_name(input_path))
-
-	ffmpeg.input('input_path')
-#     .output('')
-#     .run()
-
+	if file_conv == 'IMAGE':
+		(
+			Image
+			.open(input_path)
+			.convert("RGB")
+			.save(output_path, ex_to)
+		)
+	
+	elif file_conv == 'VIDEO':
+		pass
+	elif file_conv == 'AUDIO':
+		pass
+	else:
+		print("The file, you are trying to convert, is not supported")
 
 if __name__ == '__main__':
-	convert('kijuytrezhgfd/test.webp', 'images/test.jpg')
+	convert('images\Fear and loathing in vegas.jpg', 'png')
+	# (
+	#     ffmpeg
+	#     .input('input.mp4')
+	#     .output('output.mp4')
+	#     .run()
+	# )
+
