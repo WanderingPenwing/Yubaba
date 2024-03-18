@@ -29,7 +29,7 @@
         
     GridLayout:
         cols: 2
-        padding: 10
+        padding: 20
         
         BoxLayout:
             orientation: 'vertical'
@@ -47,7 +47,7 @@
 
                 Button:
                     text: 'remove selected'
-                    id: open_files_button
+                    id: remove_selected
                     on_press: root.remove_selected()
             
             Label:
@@ -61,13 +61,14 @@
         BoxLayout:
             orientation: 'vertical'
             padding: 20
-            Label:
-                id: config
-                text: 'config'
-                size_hint: (1, 0.2)
+            
+            BoxLayout:
+                orientation: 'horizontal'
+                padding: 20
+                size_hint: (1, 0.1)
 
-            # Button:
-            #         text: 'output folder :'
-            #         id: output_folder_button
-            #         on_press: root.open_folder()
+                Button:
+                    text: root.output_folder
+                    id: output_folder_button
+                    on_press: root.open_folder()
             Widget:

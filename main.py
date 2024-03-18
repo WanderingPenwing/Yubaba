@@ -10,7 +10,7 @@ import kivy
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.lang import Builder
-from kivy.properties import BooleanProperty, ListProperty
+from kivy.properties import BooleanProperty, ListProperty, StringProperty
 from kivy.uix.behaviors import FocusBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
@@ -69,11 +69,13 @@ class FileList(RecycleView):
 
         
 class MainLayout(BoxLayout):
+    output_folder = StringProperty("") # declare for kivy file
+
     def __init__(self, **kwargs):
         super(MainLayout, self).__init__(**kwargs)
         self.file_list = self.ids.file_list
         self.files_to_convert = []
-        self.output_folder = ""
+        self.output_folder = "no file opened" #initialize
 
     def open_files(self):
         selected_files = filechooser.open_file(title="Pick a file..", filters=[("PNG", "*.png")], multiple=True)
@@ -86,8 +88,8 @@ class MainLayout(BoxLayout):
         print("opened with yubaba : " + file_path)
         parent, name, extension = convert.find_file_name(file_path)
         
-        if self.output_folder == "" :
-            self.output_folder = parent
+        if self.output_folder == "no file opened" :
+            self.output_folder = "output folder : " + parent
             print(parent)
 
         file = {
@@ -101,7 +103,9 @@ class MainLayout(BoxLayout):
         self.file_list.data = [{'text': file['name'] + '.' + file['extension'], 'selected' : False} for file in self.files_to_convert]
 
     def open_folder(self):
-        selected_folder = filechooser.open_file(title="Pick a folder...", dirselect=True, filters=[("PNG", "*.dqzd")])
+        selected_folder = filechooser.open_file(dirselect=True)
+        print(selected_folder)
+        self.output_folder = "output folder : " + selected_folder[0]
 
     def remove_selected(self):
         self.files_to_convert = [self.files_to_convert[file_index] for file_index in range(len(self.file_list.data)) if not(self.file_list.data[file_index]['selected'])]
