@@ -75,21 +75,21 @@ class MainLayout(BoxLayout):
         super(MainLayout, self).__init__(**kwargs)
         self.file_list = self.ids.file_list
         self.files_to_convert = []
-        self.output_folder = "no file opened" #initialize
+        self.output_folder = "No file opened" #initialize
 
     def open_files(self):
         selected_files = filechooser.open_file(title="Pick a file..", filters=[("PNG", "*.png")], multiple=True)
 
         for file_path in selected_files:
             self.handle_file_open(file_path)
-            Editor.write('input_path' + str(selected_files.index(file_path) + 1), str(file_path))
+            Editor.write('Input_path' + str(selected_files.index(file_path) + 1), str(file_path))
 
     def handle_file_open(self, file_path):
-        print("opened with yubaba : " + file_path)
+        print("Opened with yubaba : " + file_path)
         parent, name, extension = convert.find_file_name(file_path)
         
-        if self.output_folder == "no file opened" :
-            self.output_folder = "output folder : " + parent
+        if self.output_folder == "No file opened" :
+            self.output_folder = "Output folder : " + parent
             print(parent)
 
         file = {
