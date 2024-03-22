@@ -124,8 +124,9 @@ class MainLayout(BoxLayout):
     
 
 class MultiSelectDropDown(Button):
-    def __init__(self, **kwargs):
+    def __init__(self, options=[], **kwargs):
         super(MultiSelectDropDown, self).__init__(**kwargs)
+        self.options = options
         self.dropdown = DropDown()
 
         # Création des boutons pour chaque option
