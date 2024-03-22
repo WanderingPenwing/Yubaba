@@ -20,6 +20,7 @@ from kivy.uix.recycleview import RecycleView
 from kivy.uix.recycleview.layout import LayoutSelectionBehavior
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.uix.widget import Widget
+from kivy.uix.dropdown import DropDown
 
 # Our other files
 import convert
@@ -130,6 +131,21 @@ class YubabaApp(App):  # load the yubaba.kv file
     def handle_start_open(self, dt):
         for file_path in self.file_paths_to_open:
             self.root.handle_file_open(file_path)
+            
+class MultiSelectDropDown(Button):
+    def __init__(self, **kwargs):
+        super(MultiSelectDropDown, self).__init__(**kwargs)
+        self.dropdown = DropDown()
+
+        # Création des boutons pour chaque option
+        for option in self.options:
+            btn = ToggleButton(text=option, size_hint_y=None, height=40)
+            btn.bind(on_release=lambda btn: self.dropdown.select(btn.text))
+            self.dropdown.add_widget(btn)
+
+        # Lier le menu déroulant au bouton principal
+        self.bind(on_release=self.dropdown.open)
+        self.dropdown.bind(on_select=lambda instance, x: setattr(self, 'text', x))
 
 
 if __name__ == '__main__':
