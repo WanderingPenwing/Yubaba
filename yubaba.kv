@@ -1,6 +1,6 @@
 <FileLabel>:
-    halign: 'left'  # Supposed to align the text to the left
-    # Draw a background to indicate selection
+    halign: 'left'  # Alignement du texte à gauche
+    # Dessine un fond pour indiquer la sélection
     canvas.before:
         Color:
             rgba: (0.9, 0.1, .1, .3) if self.selected else (0.2, 0.2, 0.2, 1)
@@ -19,7 +19,7 @@
         multiselect: True
         touch_multiselect: True
 
-<MainLayout>
+<MainLayout>:
     canvas.before:
         Color:
             rgba: 0.25, 0.25, 0.25, 1
@@ -41,17 +41,17 @@
             	size_hint: (1, 0.2)
 
             	Button:
-                    text: 'Open files'
+                    text: 'Ouvrir des fichiers'
                     id: open_files_button
                     on_press: root.open_files()
 
                 Button:
-                    text: 'Remove selected'
+                    text: 'Supprimer la sélection'
                     id: remove_selected
                     on_press: root.remove_selected()
             
             Label:
-                text: 'Files to convert:'
+                text: 'Fichiers à convertir:'
                 size_hint_y: None
                 height: self.texture_size[1] * 2
 
