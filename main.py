@@ -20,6 +20,7 @@ from kivy.uix.recycleview import RecycleView
 from kivy.uix.recycleview.layout import LayoutSelectionBehavior
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.uix.widget import Widget
+from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.dropdown import DropDown
 
 # Our other files
@@ -122,16 +123,6 @@ class MainLayout(BoxLayout):
         #         children[index].apply_selection(self.file_list, index, False)
     
 
-class YubabaApp(App):  # load the yubaba.kv file
-    def build(self):
-        self.file_paths_to_open = sys.argv[1:]
-        Clock.schedule_once(self.handle_start_open, 0)
-        return MainLayout()
-
-    def handle_start_open(self, dt):
-        for file_path in self.file_paths_to_open:
-            self.root.handle_file_open(file_path)
-            
 class MultiSelectDropDown(Button):
     def __init__(self, **kwargs):
         super(MultiSelectDropDown, self).__init__(**kwargs)
@@ -146,6 +137,18 @@ class MultiSelectDropDown(Button):
         # Lier le menu déroulant au bouton principal
         self.bind(on_release=self.dropdown.open)
         self.dropdown.bind(on_select=lambda instance, x: setattr(self, 'text', x))
+
+
+class YubabaApp(App):  # load the yubaba.kv file
+    def build(self):
+        self.file_paths_to_open = sys.argv[1:]
+        Clock.schedule_once(self.handle_start_open, 0)
+        return MainLayout()
+
+    def handle_start_open(self, dt):
+        for file_path in self.file_paths_to_open:
+            self.root.handle_file_open(file_path)
+            
 
 
 if __name__ == '__main__':
