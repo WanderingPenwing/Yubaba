@@ -21,5 +21,5 @@ class Sound_convert ():
 
 
 if __name__ == '__main__':
-    a = Sound_convert('', 'C:/Users/thoma/OneDrive/Docs/ICAM/Hackathon/Yubaba/audios/Macroblank-VANDAL_CLUB-01_vandal.mp3')
+    a = Sound_convert('', 'C:/Users/thoma/OneDrive/Docs/ICAM/Hackathon/Yubaba/audios/Macroblank.mp3')
     a.export('wav')
