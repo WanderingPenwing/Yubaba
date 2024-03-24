@@ -6,20 +6,15 @@ class Sound_convert ():
         self.output = output
         self.input = input
     
-    def export (self, format):
-        if self.output == '':
-            self.output = self.input + format
+    def export (self, output_format):
         input_format = self.input.split('.')
+        if self.output == '':
+            self.output = str(self.input[0]) + output_format
         input_format = input_format[len(input_format)-1]
-        if input_format == 'wav':
-            sound = AudioSegment.from_wav(self.input)
-        if input_format == 'mp3':
-            sound = AudioSegment.from_mp3(self.input)
-        if input_format == 'raw':
-            sound = AudioSegment.from_raw(self.input)
-        sound.export(self.output, format=format)
+        sound = AudioSegment.from_file(self.input, format=input_format)
+        sound.export(self.output, format=output_format)
 
 
 if __name__ == '__main__':
-    a = Sound_convert('', 'C:/Users/thoma/OneDrive/Docs/ICAM/Hackathon/Yubaba/audios/Macroblank.mp3')
+    a = Sound_convert('', 'Macroblank.mp3')
     a.export('wav')
