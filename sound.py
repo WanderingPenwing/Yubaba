@@ -1,4 +1,5 @@
 import pydub
+import ffmpeg
 from pydub import AudioSegment
 
 class Sound_convert ():
@@ -14,7 +15,8 @@ class Sound_convert ():
         sound = AudioSegment.from_file(self.input, format=input_format)
         sound.export(self.output, format=output_format)
 
-
+    def ffmaudio (self):
+        ffmpeg.input("C:/Users/thoma/OneDrive/Docs/ICAM/Hackathon/Yubaba/Macroblank.mp3").output('C:/Users/thoma/OneDrive/Docs/ICAM/Hackathon/Yubaba/Macroblank.wav').run()
 if __name__ == '__main__':
     a = Sound_convert('', 'Macroblank.mp3')
-    a.export('wav')
+    a.ffmaudio()
