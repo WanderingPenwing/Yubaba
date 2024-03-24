@@ -113,4 +113,4 @@ def repoussage(image):
     return convolution(image, kernel)
 
 if __name__ == '__main__':
-    convert('path/to/your/audio_or_video_file', 'desired_format')  # Assure-toi de remplacer par le chemin de ton fichier et le format voulu.
+    convert('D:\Docs\@PAUL\ICAM\I4\Hackhaton\Yubaba\videos\test.mp4', 'avi')  # Assure-toi de remplacer par le chemin de ton fichier et le format voulu.
