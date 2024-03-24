@@ -1,12 +1,8 @@
 import ffmpeg
 
-class Sound_convert ():
-    def __init__(self, output, input):
-        self.output = output
-        self.input = input
-    
-    def convert (self):
-        ffmpeg.input(self.input).output(self.output).run()
+def audio_convert (input, output):
+    ffmpeg.input(input).output(output).run()
 
 if __name__ == '__main__':
-    a = Sound_convert('', 'Macroblank.mp3')
+    audio_convert('Macroblank.wav', 'Macroblank.mp3')
+    
