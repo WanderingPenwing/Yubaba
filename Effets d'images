@@ -1,0 +1,56 @@
+import numpy as np  # Importation de Numpy pour le traitement d'images
+import matplotlib.pyplot as plt  # Pour l'affichage des images
+import imageio as io  # Pour lire et enregistrer des images
+from scipy.ndimage import rotate  # Fonction de rotation d'images
+
+def symetrie(image):
+    """Effectue une symétrie horizontale de l'image."""
+    return image[:, ::-1]
+
+def rotation(image, angle):
+    """Effectue une rotation de l'image sans changer sa forme."""
+    return rotate(image, angle, reshape=False, mode='constant', cval=0)
+
+def negative(image):
+    """Convertit une image en son négatif."""
+    return 255 - image
+
+def convertir_en_niveaux_de_gris(image):
+    """Convertit une image couleur en niveaux de gris selon la luminance."""
+    if image.ndim == 3 and image.shape[2] == 3:
+        r, g, b = image[:,:,0], image[:,:,1], image[:,:,2]
+        # Calcul de la luminance en utilisant la formule de conversion en niveaux de gris
+        y = 0.2126 * r + 0.7152 * g + 0.0722 * b
+        image_grise = np.round(y).astype(np.uint8)
+        return image_grise
+    else:
+        print("L'image n'est pas en couleur ou n'a pas le bon format.")
+        return image  # Retourne l'image inchangée si elle n'est pas en couleur
+
+def convolution(image, kernel):
+    """Applique un kernel de convolution sur l'image."""
+    output = np.zeros((image.shape[0] - kernel.shape[0] + 1, 
+                       image.shape[1] - kernel.shape[1] + 1, 3), dtype=np.float32)
+    
+    for color in range(3):
+        for y in range(output.shape[0]):
+            for x in range(output.shape[1]):
+                section = image[y:y+kernel.shape[0], x:x+kernel.shape[1], color]
+                output[y, x, color] = np.sum(section * kernel)
+                
+    return np.clip(output, 0, 255).astype(np.uint8)
+
+def lissage(image):
+    """Lisse l'image en utilisant un filtre moyen."""
+    kernel = np.ones((3, 3), dtype=np.float32) / 9
+    return convolution(image, kernel)
+
+def contraste(image):
+    """Augmente le contraste de l'image."""
+    kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]], dtype=np.float32)
+    return convolution(image, kernel)
+
+def repoussage(image):
+    """Applique un effet de repoussage."""
+    kernel = np.array([[-2, -1, 0], [-1, 1, 1], [0, 1, 2]], dtype=np.float32)
+    return convolution(image, kernel)
