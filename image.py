@@ -1,7 +1,6 @@
-import ffmpeg
 import os
 import numpy as np
-import imageio as io
+import imageio.v2 as io
 from scipy.ndimage import rotate
 from PIL import Image
 
@@ -20,19 +19,22 @@ def convertir_en_niveaux_de_gris(image):
         y = 0.2126 * r + 0.7152 * g + 0.0722 * b
         image_grise = np.round(y).astype(np.uint8)
         return image_grise
+    elif image.ndim == 2:
+        return image
     else:
         print("L'image n'est pas en couleur ou n'a pas le bon format.")
         return image
 
 def convolution(image, kernel):
-    output = np.zeros((image.shape[0] - kernel.shape[0] + 1, 
-                       image.shape[1] - kernel.shape[1] + 1, 3), dtype=np.float32)
+    if image.ndim != 3:
+        print("Convolution pour les images en niveaux de gris n'est pas supportée.")
+        return image
+
+    output = np.zeros(image.shape, dtype=np.float32)
     for color in range(3):
-        for y in range(output.shape[0]):
-            for x in range(output.shape[1]):
-                section = image[y:y+kernel.shape[0], x:x+kernel.shape[1], color]
-                output[y, x, color] = np.sum(section * kernel)
-    return np.clip(output, 0, 255).astype(np.uint8)
+        output[:, :, color] = np.clip(np.round(
+            np.convolve(image[:, :, color], kernel, mode='same')), 0, 255)
+    return output.astype(np.uint8)
 
 def lissage(image):
     kernel = np.ones((3, 3), dtype=np.float32) / 9
@@ -46,14 +48,14 @@ def repoussage(image):
     kernel = np.array([[-2, -1, 0], [-1, 1, 1], [0, 1, 2]], dtype=np.float32)
     return convolution(image, kernel)
 
-def traiter_comprimer_image(image_path, effets, output_folder, output_extension, qualite=85, *args):
+def traiter_comprimer_image(image_path, effets_params, output_folder, output_extension, qualite=85):
     image = io.imread(image_path)
-    
-    for effet in effets:
+
+    for effet, params in effets_params.items():
         if effet == "symetrie":
             image = symetrie(image)
         elif effet == "rotation":
-            angle = args[0] if args else 0
+            angle = params.get("angle", 90)
             image = rotation(image, angle)
         elif effet == "negative":
             image = negative(image)
@@ -66,17 +68,20 @@ def traiter_comprimer_image(image_path, effets, output_folder, output_extension,
         elif effet == "repoussage":
             image = repoussage(image)
         else:
-            print("Effet", effet, "non reconnu.")
-    
+            print(f"Effet {effet} non reconnu. L'effet sera ignoré.")
+
     nom_base = os.path.basename(image_path).split('.')[0]
-    output_file = f"{output_folder}/{nom_base}_{effet}_compresse.{output_extension}"
-    
+    effets_nom = "_".join(effets_params.keys())
+    output_file = os.path.join(output_folder, f"{nom_base}_{effets_nom}_compresse.{output_extension}")
+
     if not os.path.isdir(output_folder):
         os.makedirs(output_folder, exist_ok=True)
-    
-    image_traitee = Image.fromarray(image_traitee)
+
+    image_traitee = Image.fromarray(image)
     image_traitee.save(output_file, format=output_extension.upper(), quality=qualite)
     print(f"L'image compressée a été sauvegardée sous : {output_file}")
 
 if __name__ == '__main__':
-    traiter_comprimer_image('D:\Docs\@PAUL\ICAM\I4\Hackhaton\Yubaba\images\crazy squirrel.jpg', 'symetrie', 'converted_images', 'png', 80)
+    effets_params = {'symetrie': {},'niveaux_de_gris': {},'rotation': {'angle': 45},'contraste': {}}
+    traiter_comprimer_image(
+        r'D:\Docs\@PAUL\ICAM\I4\Hackhaton\Yubaba\images\crazy squirrel.jpg', effets_params, 'converted_images', 'png', 80)
