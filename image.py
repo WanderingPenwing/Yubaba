@@ -18,4 +18,4 @@ def image_convert(input_list, output_folder, output_extension):
 
 if __name__ == '__main__':
     image_convert(['D:\Docs\@PAUL\ICAM\I4\Hackhaton\Yubaba\images\crazy squirrel.jpg'], '', 'png')
-    image_convert(['D:\Docs\@PAUL\ICAM\I4\Hackhaton\Yubaba\images\crazy squirrel.png'], 'converted_images', 'jpg')
+    image_convert(['D:\Docs\@PAUL\ICAM\I4\Hackhaton\Yubaba\images\crazy squirrel.png'], 'converted_images', 'jpeg')
