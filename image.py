@@ -46,28 +46,27 @@ def repoussage(image):
     kernel = np.array([[-2, -1, 0], [-1, 1, 1], [0, 1, 2]], dtype=np.float32)
     return convolution(image, kernel)
 
-def traiter_comprimer_image(image_path, effet, output_folder, output_extension, qualite=85, *args):
+def traiter_comprimer_image(image_path, effets, output_folder, output_extension, qualite=85, *args):
     image = io.imread(image_path)
     
-    image_traitee = None
-    if effet == "symetrie":
-        image_traitee = symetrie(image)
-    elif effet == "rotation":
-        angle = args[0] if args else 0
-        image_traitee = rotation(image, angle)
-    elif effet == "negative":
-        image_traitee = negative(image)
-    elif effet == "niveaux_de_gris":
-        image_traitee = convertir_en_niveaux_de_gris(image)
-    elif effet == "lissage":
-        image_traitee = lissage(image)
-    elif effet == "contraste":
-        image_traitee = contraste(image)
-    elif effet == "repoussage":
-        image_traitee = repoussage(image)
-    else:
-        print("Effet non reconnu.")
-        return
+    for effet in effets:
+        if effet == "symetrie":
+            image = symetrie(image)
+        elif effet == "rotation":
+            angle = args[0] if args else 0
+            image = rotation(image, angle)
+        elif effet == "negative":
+            image = negative(image)
+        elif effet == "niveaux_de_gris":
+            image = convertir_en_niveaux_de_gris(image)
+        elif effet == "lissage":
+            image = lissage(image)
+        elif effet == "contraste":
+            image = contraste(image)
+        elif effet == "repoussage":
+            image = repoussage(image)
+        else:
+            print("Effet", effet, "non reconnu.")
     
     nom_base = os.path.basename(image_path).split('.')[0]
     output_file = f"{output_folder}/{nom_base}_{effet}_compresse.{output_extension}"
