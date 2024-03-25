@@ -8,7 +8,9 @@ def symetrie(image):
     return image[:, ::-1]
 
 def rotation(image, angle):
-    return rotate(image, angle, reshape=False, mode='constant', cval=0)
+    rotated_image = rotate(image, angle, reshape=True, mode='constant', cval=0)
+    return rotated_image
+    
 
 def negative(image):
     return 255 - image
@@ -82,6 +84,6 @@ def traiter_comprimer_image(image_path, effets_params, output_folder, output_ext
     print(f"L'image compressée a été sauvegardée sous : {output_file}")
 
 if __name__ == '__main__':
-    effets_params = {'symetrie': {},'niveaux_de_gris': {},'rotation': {'angle': 45},'contraste': {}}
+    effets_params = {'symetrie': {},'niveaux_de_gris': {},'rotation': {'angle': 90},'contraste': {}}
     traiter_comprimer_image(
         r'D:\Docs\@PAUL\ICAM\I4\Hackhaton\Yubaba\images\crazy squirrel.jpg', effets_params, 'converted_images', 'png', 80)
